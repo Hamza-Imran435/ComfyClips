@@ -24,7 +24,7 @@ export default function Navbar() {
         </nav>
 
         <a
-          href="#download"
+          href="#install"
           className="hidden rounded-full bg-lime px-5 py-2 font-mono text-sm font-medium text-ink transition-transform hover:-translate-y-0.5 md:inline-block"
         >
           Download now
@@ -57,7 +57,7 @@ export default function Navbar() {
             Install
           </a>
           <a
-            href="#download"
+            href="#install"
             onClick={() => setOpen(false)}
             className="rounded-full bg-lime px-5 py-2 text-center font-mono text-ink"
           >

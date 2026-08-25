@@ -35,12 +35,6 @@ export default function Hero() {
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <a
-              href="#download"
-              className="rounded-xl bg-lime px-6 py-3.5 text-center font-mono text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5"
-            >
-              Paste a link ↓
-            </a>
             <button
               type="button"
               onClick={copy}
@@ -54,14 +48,16 @@ export default function Hero() {
                 {copied ? 'copied!' : 'copy'}
               </span>
             </button>
+            <a
+              href="#install"
+              className="text-center font-body text-sm font-semibold text-ink underline decoration-lime decoration-2 underline-offset-4"
+            >
+              or install it globally →
+            </a>
           </div>
 
           <p className="mt-4 font-body text-sm text-ink/45">
-            Prefer the terminal? Install it globally — see{' '}
-            <a href="#install" className="underline decoration-lime decoration-2 underline-offset-2">
-              below
-            </a>
-            .
+            Runs entirely on your machine. Nothing you download passes through our servers.
           </p>
         </div>
 
