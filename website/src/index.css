@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #fafaf7;
+    color: #0a0a0a;
+  }
+
+  ::selection {
+    background-color: #daeb28;
+    color: #0a0a0a;
+  }
+
+  :focus-visible {
+    outline: 2px solid #0a0a0a;
+    outline-offset: 3px;
+  }
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  background-color: #daeb28;
+  vertical-align: text-bottom;
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
