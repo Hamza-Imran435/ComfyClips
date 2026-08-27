@@ -15,14 +15,49 @@ export const PLATFORMS = [
     hostPattern: /(^|\.)tiktok\.com$/i,
   },
   {
-    name: 'Facebook',
-    value: 'facebook',
-    hostPattern: /(^|\.)facebook\.com$|^fb\.watch$/i,
+    name: 'Reddit',
+    value: 'reddit',
+    hostPattern: /(^|\.)reddit\.com$|^v\.redd\.it$|^redd\.it$/i,
+  },
+  {
+    name: 'Pinterest',
+    value: 'pinterest',
+    hostPattern: /(^|\.)pinterest\.[a-z.]+$|^pin\.it$/i,
   },
   {
     name: 'X / Twitter',
     value: 'twitter',
     hostPattern: /(^|\.)twitter\.com$|(^|\.)x\.com$/i,
+  },
+  {
+    name: 'Facebook',
+    value: 'facebook',
+    hostPattern: /(^|\.)facebook\.com$|^fb\.watch$/i,
+  },
+  {
+    name: 'Vimeo',
+    value: 'vimeo',
+    hostPattern: /(^|\.)vimeo\.com$/i,
+  },
+  {
+    name: 'Dailymotion',
+    value: 'dailymotion',
+    hostPattern: /(^|\.)dailymotion\.com$|^dai\.ly$/i,
+  },
+  {
+    name: 'Rumble',
+    value: 'rumble',
+    hostPattern: /(^|\.)rumble\.com$/i,
+  },
+  {
+    name: 'LinkedIn',
+    value: 'linkedin',
+    hostPattern: /(^|\.)linkedin\.com$|^lnkd\.in$/i,
+  },
+  {
+    name: 'Snapchat',
+    value: 'snapchat',
+    hostPattern: /(^|\.)snapchat\.com$/i,
   },
 ];
 

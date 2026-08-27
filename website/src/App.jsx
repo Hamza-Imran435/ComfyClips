@@ -1,4 +1,4 @@
-// import DownloadTool from './components/DownloadTool'; // disabled until the download server is deployed somewhere that can actually run it
+import DownloadTool from './components/DownloadTool';
 import Features from './components/Features';
 import Footer from './components/Footer';
 import Hero from './components/Hero';
@@ -13,7 +13,7 @@ export default function App() {
       <Navbar />
       <main>
         <Hero />
-        {/* <DownloadTool /> */}
+        <DownloadTool />
         <PlatformStrip />
         <Features />
         <Install />
