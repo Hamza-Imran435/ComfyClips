@@ -1,5 +1,6 @@
+import AdmZip from 'adm-zip';
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, rmSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import chalk from 'chalk';
@@ -9,6 +10,9 @@ import YTDlpWrap from './ytdlp-lib.js';
 const CACHE_DIR = path.join(os.homedir(), '.comfyclips', 'bin');
 const YT_DLP_BIN_NAME = os.platform() === 'win32' ? 'yt-dlp.exe' : 'yt-dlp';
 const CACHED_YT_DLP_PATH = path.join(CACHE_DIR, YT_DLP_BIN_NAME);
+const DENO_BIN_NAME = os.platform() === 'win32' ? 'deno.exe' : 'deno';
+const CACHED_DENO_PATH = path.join(CACHE_DIR, DENO_BIN_NAME);
+const DENO_LATEST_RELEASE_API = 'https://api.github.com/repos/denoland/deno/releases/latest';
 
 function commandExists(cmd, versionFlag = '--version') {
   const result = spawnSync(cmd, [versionFlag], { stdio: 'ignore' });
@@ -18,6 +22,65 @@ function commandExists(cmd, versionFlag = '--version') {
 export function isFfmpegAvailable() {
   // ffmpeg uses single-dash flags (-version), unlike most CLIs.
   return commandExists('ffmpeg', '-version');
+}
+
+function denoAssetName() {
+  const platform = os.platform();
+  const arch = os.arch() === 'arm64' ? 'aarch64' : 'x86_64';
+
+  if (platform === 'darwin') return `deno-${arch}-apple-darwin.zip`;
+  if (platform === 'win32') return `deno-${arch}-pc-windows-msvc.zip`;
+  return `deno-${arch}-unknown-linux-gnu.zip`;
+}
+
+async function downloadDeno(destPath) {
+  const release = await fetch(DENO_LATEST_RELEASE_API).then((res) => {
+    if (!res.ok) throw new Error(`GitHub API responded with ${res.status}`);
+    return res.json();
+  });
+
+  const assetName = denoAssetName();
+  const asset = release.assets?.find((a) => a.name === assetName);
+  if (!asset) throw new Error(`No Deno release asset found for ${assetName}`);
+
+  const zipBuffer = await fetch(asset.browser_download_url).then((res) => {
+    if (!res.ok) throw new Error(`Download responded with ${res.status}`);
+    return res.arrayBuffer();
+  });
+
+  const zip = new AdmZip(Buffer.from(zipBuffer));
+  const entry = zip.getEntries().find((e) => e.entryName === DENO_BIN_NAME);
+  if (!entry) throw new Error(`${DENO_BIN_NAME} not found inside downloaded archive`);
+
+  zip.extractEntryTo(entry, CACHE_DIR, false, true);
+  if (os.platform() !== 'win32') chmodSync(destPath, 0o755);
+}
+
+// YouTube's extractor needs a JS runtime (Deno) to solve its signature
+// challenge; without one, most modern formats silently disappear from the
+// list yt-dlp reports. Auto-provision it the same way we do for yt-dlp
+// itself, so `npm install` alone is enough — no manual setup step.
+export async function resolveJsRuntimeArgs() {
+  if (commandExists('deno', '--version')) {
+    return [];
+  }
+
+  if (existsSync(CACHED_DENO_PATH)) {
+    return ['--js-runtimes', `deno:${CACHED_DENO_PATH}`];
+  }
+
+  console.log(chalk.yellow('No JS runtime found — required for reliable YouTube downloads.'));
+  const spinner = ora('Downloading Deno runtime (one-time setup)...').start();
+  try {
+    mkdirSync(CACHE_DIR, { recursive: true });
+    await downloadDeno(CACHED_DENO_PATH);
+    spinner.succeed(`Deno downloaded to ${CACHED_DENO_PATH}`);
+    return ['--js-runtimes', `deno:${CACHED_DENO_PATH}`];
+  } catch (err) {
+    spinner.fail(`Failed to download Deno automatically: ${err.message}`);
+    rmSync(CACHED_DENO_PATH, { force: true });
+    return [];
+  }
 }
 
 export async function resolveYtDlpBinaryPath() {

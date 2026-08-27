@@ -26,9 +26,17 @@ function videoFormatSelector(quality) {
   ].join('/');
 }
 
-export function buildArgs({ url, mode, quality, audioFormat, outputDir, ffmpegAvailable }) {
+export function buildArgs({
+  url,
+  mode,
+  quality,
+  audioFormat,
+  outputDir,
+  ffmpegAvailable,
+  jsRuntimeArgs = [],
+}) {
   const outputTemplate = path.join(outputDir, '%(title)s.%(ext)s');
-  const args = [url, '-o', outputTemplate, '--no-playlist', '--newline'];
+  const args = [url, '-o', outputTemplate, '--no-playlist', '--newline', ...jsRuntimeArgs];
   const warnings = [];
 
   if (mode === 'audio') {
@@ -61,6 +69,7 @@ export async function downloadMedia({
   audioFormat,
   outputDir,
   ffmpegAvailable,
+  jsRuntimeArgs,
 }) {
   mkdirSync(outputDir, { recursive: true });
 
@@ -72,6 +81,7 @@ export async function downloadMedia({
     audioFormat,
     outputDir,
     ffmpegAvailable,
+    jsRuntimeArgs,
   });
   warnings.forEach(printWarning);
 

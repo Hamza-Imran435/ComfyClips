@@ -3,7 +3,7 @@ import { readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
-import { isFfmpegAvailable, resolveYtDlpBinaryPath } from './binaries.js';
+import { isFfmpegAvailable, resolveJsRuntimeArgs, resolveYtDlpBinaryPath } from './binaries.js';
 import { downloadMedia } from './downloader.js';
 import { PLATFORMS, hostMatchesPlatform } from './platforms.js';
 import boxedSelect from './prompts/boxedSelect.js';
@@ -138,6 +138,7 @@ async function main() {
   try {
     const binaryPath = await resolveYtDlpBinaryPath();
     const ffmpegAvailable = isFfmpegAvailable();
+    const jsRuntimeArgs = await resolveJsRuntimeArgs();
 
     const { outputFile, elapsedSeconds } = await downloadMedia({
       binaryPath,
@@ -147,6 +148,7 @@ async function main() {
       audioFormat,
       outputDir,
       ffmpegAvailable,
+      jsRuntimeArgs,
     });
 
     let fileSize = 'Unknown';
