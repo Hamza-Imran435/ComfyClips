@@ -56,7 +56,16 @@ export function buildArgs({
       );
     }
   } else if (ffmpegAvailable) {
-    args.push('-f', videoFormatSelector(quality), '--merge-output-format', 'mp4');
+    args.push(
+      '-S',
+      'vcodec:h264,acodec:aac',
+      '-f',
+      videoFormatSelector(quality),
+      '--merge-output-format',
+      'mp4',
+      '--postprocessor-args',
+      'Merger:-c:a aac -movflags +faststart'
+    );
   } else {
     const h = heightCap(quality);
     args.push('-f', `best[ext=mp4]${h}/best${h}`);

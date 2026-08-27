@@ -72,7 +72,7 @@ app.post('/api/download', async (req, res) => {
   if (typeof url !== 'string' || !isSupportedUrl(url)) {
     res
       .status(400)
-      .json({ error: 'Paste a link from YouTube, Instagram, TikTok, Facebook, or X.' });
+      .json({ error: 'Paste a link from a supported platform (YouTube, TikTok, Instagram, Reddit, Pinterest, Vimeo, Facebook, X, etc.).' });
     return;
   }
   if (!VALID_MODES.has(mode)) {
@@ -168,7 +168,7 @@ app.get(/^\/(?!api\/).*/, (_req, res) => {
 // On Vercel, the function is invoked directly per-request — app.listen()
 // never runs there. Locally (and in the Docker/Render deploy) it's a normal
 // long-running server.
-if (!process.env.VERCEL) {
+if (!process.env.VERCEL && process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     console.log(`ComfyClips listening on http://localhost:${PORT}`);
   });

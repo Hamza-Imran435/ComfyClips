@@ -1,11 +1,31 @@
-import { SiFacebook, SiInstagram, SiTiktok, SiX, SiYoutube } from 'react-icons/si';
+import { FaLinkedin } from 'react-icons/fa6';
+import {
+  SiDailymotion,
+  SiFacebook,
+  SiInstagram,
+  SiPinterest,
+  SiReddit,
+  SiRumble,
+  SiSnapchat,
+  SiTiktok,
+  SiVimeo,
+  SiX,
+  SiYoutube,
+} from 'react-icons/si';
 
 const PLATFORMS = [
   { name: 'YouTube', icon: SiYoutube },
   { name: 'Instagram', icon: SiInstagram },
   { name: 'TikTok', icon: SiTiktok },
-  { name: 'Facebook', icon: SiFacebook },
+  { name: 'Reddit', icon: SiReddit },
+  { name: 'Pinterest', icon: SiPinterest },
   { name: 'X / Twitter', icon: SiX },
+  { name: 'Facebook', icon: SiFacebook },
+  { name: 'Vimeo', icon: SiVimeo },
+  { name: 'Dailymotion', icon: SiDailymotion },
+  { name: 'Rumble', icon: SiRumble },
+  { name: 'LinkedIn', icon: FaLinkedin },
+  { name: 'Snapchat', icon: SiSnapchat },
 ];
 
 export default function PlatformStrip() {

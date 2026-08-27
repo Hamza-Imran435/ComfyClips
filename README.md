@@ -1,6 +1,6 @@
 # ComfyClips
 
-Interactive CLI to download video or audio from social media links (YouTube, Instagram, TikTok, Facebook, X/Twitter). Built on top of [yt-dlp](https://github.com/yt-dlp/yt-dlp).
+Interactive CLI to download video or audio from social media links (YouTube, Instagram, TikTok, Reddit, Pinterest, Vimeo, Dailymotion, Rumble, LinkedIn, Snapchat, Facebook, X/Twitter). Built on top of [yt-dlp](https://github.com/yt-dlp/yt-dlp).
 
 ## Requirements
 
@@ -26,7 +26,7 @@ comfyclips
 ```
 
 You'll be prompted to:
-1. Select a platform (YouTube, Instagram, TikTok, Facebook, X/Twitter)
+1. Select a platform (YouTube, TikTok, Reddit, Pinterest, Vimeo, Instagram, X/Twitter, Facebook, etc.)
 2. Paste the video link
 3. Choose Video or Audio only
 4. Pick a quality (video) or format (audio: mp3/m4a/wav/opus)

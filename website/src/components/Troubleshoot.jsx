@@ -32,7 +32,7 @@ const ISSUES = [
       <>
         The URL isn't a direct link to a video or post — playlist pages, channel pages, and short
         links that redirect through a landing page can trip this up. Open the video itself in
-        your browser and copy that address, from YouTube, Instagram, TikTok, Facebook, or X.
+        your browser and copy that address, from YouTube, TikTok, Instagram, Reddit, Pinterest, Vimeo, Facebook, X, etc.
       </>
     ),
   },

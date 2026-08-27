@@ -30,7 +30,7 @@ export default function Hero() {
 
           <p className="mt-6 max-w-md font-body text-lg leading-relaxed text-ink/70">
             ComfyClips is a terminal tool that pulls video or audio straight off YouTube,
-            Instagram, TikTok, Facebook and X — no pop-ups, no sketchy converter sites, no
+            Instagram, TikTok, Reddit, Pinterest, Vimeo, X and more — no pop-ups, no sketchy converter sites, no
             account.
           </p>
 

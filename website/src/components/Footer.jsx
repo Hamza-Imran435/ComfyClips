@@ -8,7 +8,7 @@ export default function Footer() {
         </div>
 
         <p className="max-w-lg font-body text-xs leading-relaxed text-ink/45">
-          Not affiliated with YouTube, Instagram, TikTok, Facebook, or X. Downloading content you
+          Not affiliated with YouTube, Instagram, TikTok, Reddit, Pinterest, Vimeo, Facebook, X, or any other platform. Downloading content you
           don't own or don't have rights to may violate that platform's terms of service or
           copyright law — use responsibly.
         </p>
