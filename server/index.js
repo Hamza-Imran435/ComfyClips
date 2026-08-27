@@ -19,7 +19,10 @@ const PORT = process.env.PORT || 8787;
 // yt-dlp processes run at once, how long one can run, and how often a single
 // visitor can trigger one.
 const MAX_CONCURRENT_DOWNLOADS = 3;
-const REQUEST_TIMEOUT_MS = 3 * 60 * 1000;
+// Vercel hard-kills the function at maxDuration (60s on Hobby, see
+// vercel.json) with no chance to respond; time out a bit earlier ourselves
+// so slow downloads get our friendly error instead of a Vercel crash page.
+const REQUEST_TIMEOUT_MS = process.env.VERCEL ? 55 * 1000 : 3 * 60 * 1000;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 6;
 
@@ -162,6 +165,13 @@ app.get(/^\/(?!api\/).*/, (_req, res) => {
   res.sendFile(path.join(WEBSITE_DIST, 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`ComfyClips listening on http://localhost:${PORT}`);
-});
+// On Vercel, the function is invoked directly per-request — app.listen()
+// never runs there. Locally (and in the Docker/Render deploy) it's a normal
+// long-running server.
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`ComfyClips listening on http://localhost:${PORT}`);
+  });
+}
+
+export default app;

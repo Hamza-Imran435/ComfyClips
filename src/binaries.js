@@ -8,7 +8,12 @@ import chalk from 'chalk';
 import ora from 'ora';
 import YTDlpWrap from './ytdlp-lib.js';
 
-const CACHE_DIR = path.join(os.homedir(), '.comfyclips', 'bin');
+// On Vercel (and other read-only-filesystem serverless hosts) only /tmp is
+// writable, and it isn't guaranteed to survive across invocations — so this
+// falls back to os.tmpdir() there instead of the user's home directory.
+const CACHE_DIR = process.env.VERCEL
+  ? path.join(os.tmpdir(), 'comfyclips-bin')
+  : path.join(os.homedir(), '.comfyclips', 'bin');
 const YT_DLP_BIN_NAME = os.platform() === 'win32' ? 'yt-dlp.exe' : 'yt-dlp';
 const CACHED_YT_DLP_PATH = path.join(CACHE_DIR, YT_DLP_BIN_NAME);
 const DENO_BIN_NAME = os.platform() === 'win32' ? 'deno.exe' : 'deno';
