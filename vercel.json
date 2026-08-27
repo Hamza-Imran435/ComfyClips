@@ -1,7 +1,7 @@
 {
-  "buildCommand": "npm --prefix website ci && npm --prefix website run build",
+  "buildCommand": "cd website && npm ci && npm run build",
   "outputDirectory": "website/dist",
-  "installCommand": "npm ci && npm --prefix server ci",
+  "installCommand": "npm ci && cd server && npm ci",
   "functions": {
     "server/index.js": {
       "maxDuration": 60
