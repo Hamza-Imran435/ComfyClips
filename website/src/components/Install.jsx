@@ -151,15 +151,7 @@ export default function Install() {
           </a>
         </span>
         <span>
-          <a
-            href="https://ffmpeg.org/"
-            target="_blank"
-            rel="noreferrer"
-            className="underline decoration-lime decoration-2 underline-offset-2"
-          >
-            ffmpeg
-          </a>{' '}
-          recommended for merging streams and audio conversion
+          Everything else — ffmpeg, yt-dlp, the JS runtime — installs itself on first run
         </span>
       </div>
     </section>

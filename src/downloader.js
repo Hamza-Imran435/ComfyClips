@@ -34,9 +34,18 @@ export function buildArgs({
   outputDir,
   ffmpegAvailable,
   jsRuntimeArgs = [],
+  ffmpegLocationArgs = [],
 }) {
   const outputTemplate = path.join(outputDir, '%(title)s.%(ext)s');
-  const args = [url, '-o', outputTemplate, '--no-playlist', '--newline', ...jsRuntimeArgs];
+  const args = [
+    url,
+    '-o',
+    outputTemplate,
+    '--no-playlist',
+    '--newline',
+    ...jsRuntimeArgs,
+    ...ffmpegLocationArgs,
+  ];
   const warnings = [];
 
   if (mode === 'audio') {
@@ -70,6 +79,7 @@ export async function downloadMedia({
   outputDir,
   ffmpegAvailable,
   jsRuntimeArgs,
+  ffmpegLocationArgs,
 }) {
   mkdirSync(outputDir, { recursive: true });
 
@@ -82,6 +92,7 @@ export async function downloadMedia({
     outputDir,
     ffmpegAvailable,
     jsRuntimeArgs,
+    ffmpegLocationArgs,
   });
   warnings.forEach(printWarning);
 

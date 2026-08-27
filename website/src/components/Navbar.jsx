@@ -21,6 +21,9 @@ export default function Navbar() {
           <a href="#install" className="transition-colors hover:text-ink">
             Install
           </a>
+          <a href="#troubleshooting" className="transition-colors hover:text-ink">
+            Troubleshooting
+          </a>
         </nav>
 
         <a
@@ -55,6 +58,9 @@ export default function Navbar() {
           </a>
           <a href="#install" onClick={() => setOpen(false)}>
             Install
+          </a>
+          <a href="#troubleshooting" onClick={() => setOpen(false)}>
+            Troubleshooting
           </a>
           <a
             href="#install"

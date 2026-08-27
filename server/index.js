@@ -5,7 +5,7 @@ import { mkdtemp, readdir, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { isFfmpegAvailable, resolveJsRuntimeArgs, resolveYtDlpBinaryPath } from '../src/binaries.js';
+import { resolveFfmpeg, resolveJsRuntimeArgs, resolveYtDlpBinaryPath } from '../src/binaries.js';
 import { buildArgs } from '../src/downloader.js';
 import { PLATFORMS } from '../src/platforms.js';
 import YTDlpWrap from '../src/ytdlp-lib.js';
@@ -101,7 +101,7 @@ app.post('/api/download', async (req, res) => {
 
   try {
     const binaryPath = await resolveYtDlpBinaryPath();
-    const ffmpegAvailable = isFfmpegAvailable();
+    const { available: ffmpegAvailable, locationArgs: ffmpegLocationArgs } = resolveFfmpeg();
     const jsRuntimeArgs = await resolveJsRuntimeArgs();
     const { args } = buildArgs({
       url,
@@ -111,6 +111,7 @@ app.post('/api/download', async (req, res) => {
       outputDir: tempDir,
       ffmpegAvailable,
       jsRuntimeArgs,
+      ffmpegLocationArgs,
     });
 
     const ytDlpWrap = new YTDlpWrap(binaryPath);

@@ -1,14 +1,23 @@
 FROM node:20-slim
 
-# ffmpeg is required to merge video/audio streams and convert audio formats.
+# curl + unzip are only needed to install deno below; ca-certificates for
+# both that and npm's own HTTPS downloads (yt-dlp, ffmpeg-static).
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends ffmpeg ca-certificates \
+  && apt-get install -y --no-install-recommends ca-certificates curl unzip \
   && rm -rf /var/lib/apt/lists/*
+
+# Deno is required by yt-dlp to solve YouTube's signature challenge. Baked in
+# at build time (rather than left to ComfyClips' runtime auto-download) so a
+# fresh container never has to fetch it on its first request.
+ENV DENO_INSTALL=/usr/local
+RUN curl -fsSL https://deno.land/install.sh | sh -s -- --yes \
+  && apt-get purge -y --auto-remove curl unzip
 
 WORKDIR /app
 
 # Root package: shared downloader/binaries/platforms logic used by both the
-# CLI and the server.
+# CLI and the server. `npm ci` also fetches a static ffmpeg binary via the
+# ffmpeg-static postinstall script — no system ffmpeg package needed.
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 COPY src ./src

@@ -1,4 +1,5 @@
 import AdmZip from 'adm-zip';
+import ffmpegStaticPath from 'ffmpeg-static';
 import { spawnSync } from 'node:child_process';
 import { chmodSync, existsSync, mkdirSync, rmSync } from 'node:fs';
 import os from 'node:os';
@@ -19,9 +20,18 @@ function commandExists(cmd, versionFlag = '--version') {
   return !result.error && result.status === 0;
 }
 
-export function isFfmpegAvailable() {
+// Prefer a system ffmpeg if the user already has one on PATH; otherwise fall
+// back to the static binary `ffmpeg-static` already fetched via its own npm
+// postinstall step, so no separate download step is needed here.
+export function resolveFfmpeg() {
   // ffmpeg uses single-dash flags (-version), unlike most CLIs.
-  return commandExists('ffmpeg', '-version');
+  if (commandExists('ffmpeg', '-version')) {
+    return { available: true, locationArgs: [] };
+  }
+  if (ffmpegStaticPath && existsSync(ffmpegStaticPath)) {
+    return { available: true, locationArgs: ['--ffmpeg-location', ffmpegStaticPath] };
+  }
+  return { available: false, locationArgs: [] };
 }
 
 function denoAssetName() {

@@ -5,6 +5,7 @@ import Hero from './components/Hero';
 import Install from './components/Install';
 import Navbar from './components/Navbar';
 import PlatformStrip from './components/PlatformStrip';
+import Troubleshoot from './components/Troubleshoot';
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <PlatformStrip />
         <Features />
         <Install />
+        <Troubleshoot />
       </main>
       <Footer />
     </div>

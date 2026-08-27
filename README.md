@@ -5,11 +5,12 @@ Interactive CLI to download video or audio from social media links (YouTube, Ins
 ## Requirements
 
 - Node.js >= 18
-- [ffmpeg](https://ffmpeg.org/) on your PATH — required to merge separate video/audio streams and to extract/convert audio formats. Without it, downloads may fail or fall back to lower quality.
-  - Debian/Ubuntu: `sudo apt-get install ffmpeg`
-  - macOS: `brew install ffmpeg`
-  - Windows: `choco install ffmpeg` (or download from ffmpeg.org and add it to PATH)
-- `yt-dlp` — not required ahead of time. If it isn't found on your PATH, ComfyClips downloads a copy automatically on first run into `~/.comfyclips/bin`.
+
+That's it — everything else is provisioned automatically:
+
+- **ffmpeg** — used to merge separate video/audio streams and to extract/convert audio formats. If it's not on your PATH, `npm install` fetches a static build for your platform (via `ffmpeg-static`).
+- **yt-dlp** — if it isn't found on your PATH, ComfyClips downloads a copy on first run into `~/.comfyclips/bin`.
+- **Deno** — YouTube requires a JS runtime to solve its signature challenge. If it isn't found on your PATH, ComfyClips downloads it on first run into `~/.comfyclips/bin`.
 
 ## Install
 
