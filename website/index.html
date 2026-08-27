@@ -1,50 +1,57 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/comfyclips-icon.png" />
     <link rel="apple-touch-icon" href="/comfyclips-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0a0a" />
+    <meta name="color-scheme" content="light" />
 
     <!-- Primary SEO -->
     <title>ComfyClips — Download Video & Audio from YouTube, TikTok, Reddit, Pinterest, Instagram, X & More</title>
     <meta
       name="description"
-      content="ComfyClips is a free, open-source terminal tool that downloads video or audio from YouTube, TikTok, Instagram, Reddit, Pinterest, Vimeo, Facebook, X, and more — no browser, no ads, no tracking. Built on yt-dlp."
+      content="ComfyClips is a free, open-source tool and CLI to download video or audio from YouTube, TikTok, Instagram, Reddit, Pinterest, Vimeo, Facebook, X, and more. Auto-converts to QuickTime & mobile-ready H.264 MP4/MP3."
     />
     <meta
       name="keywords"
       content="comfyclips, download youtube videos, youtube downloader cli, terminal video downloader, download tiktok videos, download instagram reels, download reddit videos, download pinterest videos, download vimeo videos, download twitter videos, download x videos, download facebook videos, yt-dlp, cli video downloader, download video audio, mp3 downloader, open source video downloader, npm video downloader"
     />
     <meta name="author" content="Hamza Imran" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <link rel="canonical" href="https://comfyclips.online/" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://comfyclips.online/" />
     <meta property="og:site_name" content="ComfyClips" />
-    <meta property="og:title" content="ComfyClips — Download Video & Audio from Your Terminal" />
+    <meta property="og:title" content="ComfyClips — Free Video & Audio Downloader (CLI & Web)" />
     <meta
       property="og:description"
-      content="A free, open-source terminal tool that downloads video or audio from YouTube, Instagram, TikTok, Facebook and X — no browser, no ads, no tracking."
+      content="A free, open-source tool that downloads video or audio from YouTube, Instagram, TikTok, Reddit, Pinterest, Vimeo, Facebook and X — no pop-ups, no ads, no tracking. Built on yt-dlp."
     />
     <meta property="og:image" content="https://comfyclips.online/comfyclips-icon.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="ComfyClips Logo" />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://comfyclips.online/" />
-    <meta name="twitter:title" content="ComfyClips — Download Video & Audio from Your Terminal" />
+    <meta name="twitter:title" content="ComfyClips — Free Video & Audio Downloader (CLI & Web)" />
     <meta
       name="twitter:description"
-      content="A free, open-source terminal tool that downloads video or audio from YouTube, Instagram, TikTok, Facebook and X — no browser, no ads, no tracking."
+      content="A free, open-source tool that downloads video or audio from YouTube, Instagram, TikTok, Reddit, Pinterest, Vimeo, Facebook and X — no ads, no tracking."
     />
     <meta name="twitter:image" content="https://comfyclips.online/comfyclips-icon.png" />
+    <meta name="twitter:image:alt" content="ComfyClips Logo" />
 
-    <link rel="icon" type="image/png" href="/comfyclips-icon.png" />
-    <link rel="apple-touch-icon" href="/comfyclips-icon.png" />
+    <!-- Manifest -->
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Font Preconnect & Optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -52,30 +59,83 @@
       rel="stylesheet"
     />
 
-    <!-- Structured data -->
+    <!-- Comprehensive Structured Data (Schema.org / JSON-LD for Google, Bing & AI Engines) -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "ComfyClips",
-        "url": "https://comfyclips.online/",
-        "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "Windows, macOS, Linux",
-        "description": "ComfyClips is a free, open-source terminal tool that downloads video or audio from YouTube, Instagram, TikTok, Facebook and X — no browser, no ads, no tracking. Built on yt-dlp.",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "softwareVersion": "latest",
-        "author": {
-          "@type": "Person",
-          "name": "Hamza Imran"
-        }
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://comfyclips.online/#website",
+            "url": "https://comfyclips.online/",
+            "name": "ComfyClips",
+            "description": "Download Video & Audio from YouTube, TikTok, Instagram, Reddit, Pinterest, Vimeo, Facebook, and X from your terminal or browser.",
+            "inLanguage": "en-US"
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://comfyclips.online/#software",
+            "name": "ComfyClips",
+            "url": "https://comfyclips.online/",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Windows, macOS, Linux",
+            "description": "ComfyClips is a free, open-source CLI and Web tool that downloads video or audio from YouTube, Instagram, TikTok, Reddit, Pinterest, Vimeo, Facebook and X — no browser extensions, no ads, no tracking. Built on yt-dlp and ffmpeg.",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "softwareVersion": "1.2.0",
+            "downloadUrl": "https://www.npmjs.com/package/comfyclips",
+            "author": {
+              "@type": "Person",
+              "name": "Hamza Imran",
+              "url": "https://github.com/Hamza-Imran435"
+            }
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://comfyclips.online/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Why is video quality capped or won't merge?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Fixed automatically in ComfyClips v1.2.0 — npm install bundles a static ffmpeg build for your OS, no manual install needed."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Why do YouTube downloads fail with 'Requested format is not available' or 'no JS runtime'?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "YouTube requires a JS runtime (Deno) to unlock modern formats. ComfyClips automatically downloads Deno on first run into ~/.comfyclips."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Which social platforms are supported by ComfyClips?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "ComfyClips supports YouTube, Instagram, TikTok, Reddit, Pinterest, Vimeo, Dailymotion, Rumble, LinkedIn, Snapchat, Facebook, and X/Twitter."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Why do downloaded videos play with a QuickTime error on macOS?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "ComfyClips automatically formats video tracks into standard H.264 video with AAC audio and faststart moov flags for 100% native Apple QuickTime and mobile compatibility."
+                }
+              }
+            ]
+          }
+        ]
       }
     </script>
   </head>
-  <body>
+  <body class="bg-paper font-body text-ink antialiased selection:bg-lime selection:text-ink">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

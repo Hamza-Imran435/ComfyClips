@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { FaLinkedin } from 'react-icons/fa6';
 import {
   SiDailymotion,
@@ -33,16 +34,25 @@ export default function PlatformStrip() {
     <section id="platforms" className="border-y border-ink/10 bg-ink py-10">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <p className="mb-6 text-center font-mono text-xs uppercase tracking-[0.2em] text-paper/40">
-          Works with
+          Works seamlessly with
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-wrap items-center justify-center gap-x-9 gap-y-6"
+        >
           {PLATFORMS.map(({ name, icon: Icon }) => (
-            <div key={name} className="flex items-center gap-2.5 text-paper/80">
-              <Icon className="h-5 w-5" aria-hidden="true" />
+            <div
+              key={name}
+              className="flex items-center gap-2.5 text-paper/75 transition-all hover:text-paper hover:scale-105"
+            >
+              <Icon className="h-5 w-5 text-paper/90" aria-hidden="true" />
               <span className="font-body text-sm font-medium">{name}</span>
             </div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

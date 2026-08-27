@@ -117,9 +117,19 @@ app.post('/api/download', async (req, res) => {
       ffmpegLocationArgs,
     });
 
+    let stderrOutput = '';
     const ytDlpWrap = new YTDlpWrap(binaryPath);
     await new Promise((resolve, reject) => {
-      ytDlpWrap.exec(args, {}, abortController.signal).on('error', reject).on('close', resolve);
+      const emitter = ytDlpWrap.exec(args, {}, abortController.signal);
+      emitter.on('ytDlpEvent', (type, data) => {
+        if (type === 'error' || type === 'youtube' || type === 'instagram') {
+          stderrOutput += ` ${data}`;
+        }
+      });
+      emitter.on('error', (err) => {
+        reject(new Error(err.message || stderrOutput));
+      });
+      emitter.on('close', resolve);
     });
 
     clearTimeout(timeoutId);
@@ -129,7 +139,7 @@ app.post('/api/download', async (req, res) => {
 
     const files = await readdir(tempDir);
     if (files.length === 0) {
-      throw new Error('No file was produced.');
+      throw new Error(stderrOutput || 'No file was produced.');
     }
 
     const outputPath = path.join(tempDir, files[0]);
@@ -146,10 +156,30 @@ app.post('/api/download', async (req, res) => {
     });
   } catch (err) {
     clearTimeout(timeoutId);
+    const msg = (err.message || '').toLowerCase();
+    let userFriendlyError = 'Download failed. Check the link and try again.';
+
+    if (timedOut) {
+      userFriendlyError = 'Download timed out. Try a shorter clip or lower resolution.';
+    } else if (
+      msg.includes('available to everyone') ||
+      msg.includes('certain audiences') ||
+      msg.includes('login required') ||
+      msg.includes('sign in') ||
+      msg.includes('private') ||
+      msg.includes('age-restricted') ||
+      msg.includes('cookies')
+    ) {
+      userFriendlyError =
+        'This post is age-restricted, private, or requires an Instagram login. Only public videos can be extracted.';
+    } else if (msg.includes('not found') || msg.includes('404') || msg.includes('does not exist')) {
+      userFriendlyError = 'The requested video was not found or has been deleted.';
+    } else if (msg.includes('unsupported url')) {
+      userFriendlyError = 'Unsupported URL format. Please paste a direct post or video link.';
+    }
+
     if (!res.headersSent) {
-      res
-        .status(500)
-        .json({ error: timedOut ? 'Download timed out.' : 'Download failed. Check the link and try again.' });
+      res.status(500).json({ error: userFriendlyError });
     }
     await rm(tempDir, { recursive: true, force: true }).catch(() => {});
   } finally {
