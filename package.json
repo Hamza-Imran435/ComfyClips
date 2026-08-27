@@ -1,6 +1,6 @@
 {
   "name": "comfyclips",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Interactive CLI to download video or audio from social media platforms (YouTube, Instagram, TikTok, Facebook, X/Twitter) via yt-dlp.",
   "type": "module",
   "bin": {
