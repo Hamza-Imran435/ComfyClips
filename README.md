@@ -26,7 +26,7 @@ comfyclips
 ```
 
 You'll be prompted to:
-1. Select a platform (YouTube, TikTok, Reddit, Pinterest, Vimeo, Instagram, X/Twitter, Facebook, etc.)
+1. Select a platform (YouTube, TikTok, Instagram, Reddit, Pinterest, Vimeo, Dailymotion, Rumble, LinkedIn, Snapchat, Facebook, X/Twitter)
 2. Paste the video link
 3. Choose Video or Audio only
 4. Pick a quality (video) or format (audio: mp3/m4a/wav/opus)

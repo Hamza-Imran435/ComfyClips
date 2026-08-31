@@ -3,6 +3,17 @@
 All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses [Semantic Versioning](https://semver.org/).
 
+## [1.3.0] - 2026-08-31
+
+### Added
+- Platform support for Reddit, Pinterest, Vimeo, Dailymotion, Rumble, LinkedIn, and Snapchat, in both the CLI and the website.
+- Website: friendlier, more specific error messages for age-restricted/private/login-required content, missing videos, and unsupported URLs.
+- Website: quality-of-life polish — animated platform strip and features section, download progress stages, and richer platform icons.
+
+### Changed
+- Video downloads now prefer H.264/AAC streams with faststart muxing for broader QuickTime and mobile playback compatibility.
+- Server download errors surface the underlying yt-dlp message instead of a generic failure when available.
+
 ## [1.2.0] - 2026-08-27
 
 ### Added

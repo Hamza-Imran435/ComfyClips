@@ -43,6 +43,10 @@ export function buildArgs({
     outputTemplate,
     '--no-playlist',
     '--newline',
+    // Some platforms (Facebook, Reddit, etc.) use the full post caption as the
+    // title, which can blow past the filesystem's filename length limit.
+    '--trim-filenames',
+    '150',
     ...jsRuntimeArgs,
     ...ffmpegLocationArgs,
   ];
