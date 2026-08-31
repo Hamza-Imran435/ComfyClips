@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8787',
+        target: 'https://darkcyan-wren-793766.hostingersite.com',
         changeOrigin: true,
       },
     },
