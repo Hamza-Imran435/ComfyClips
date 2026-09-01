@@ -30,6 +30,8 @@ export function buildArgs({
   ffmpegAvailable,
   jsRuntimeArgs = [],
   ffmpegLocationArgs = [],
+  cookiesArgs = [],
+  potPluginArgs = [],
 }) {
   const outputTemplate = path.join(outputDir, '%(title)s.%(ext)s');
   const args = [
@@ -52,6 +54,11 @@ export function buildArgs({
     // platform's extractor.
     '--extractor-args',
     'youtube:player_client=android,web',
+    // Only present when YT_COOKIES_B64 is set (see binaries.js) — a real
+    // logged-in session clears the bot check when client spoofing alone
+    // doesn't, since the datacenter IP itself is what's flagged.
+    ...cookiesArgs,
+    ...potPluginArgs,
     ...jsRuntimeArgs,
     ...ffmpegLocationArgs,
   ];
