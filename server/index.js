@@ -9,10 +9,10 @@ import {
   resolveCookiesArgs,
   resolveFfmpeg,
   resolveJsRuntimeArgs,
+  resolvePotPluginArgs,
   resolveYtDlpBinaryPath,
 } from './lib/binaries.js';
 import { buildArgs } from './lib/downloader.js';
-import { resolveYoutubeExtractorArgs } from './lib/potoken.js';
 import { PLATFORMS } from './lib/platforms.js';
 import YTDlpWrap from './lib/ytdlp-lib.js';
 
@@ -117,7 +117,7 @@ app.post('/api/download', async (req, res) => {
     const { available: ffmpegAvailable, locationArgs: ffmpegLocationArgs } = resolveFfmpeg();
     const jsRuntimeArgs = await resolveJsRuntimeArgs();
     const cookiesArgs = resolveCookiesArgs();
-    const youtubeExtractorArgs = await resolveYoutubeExtractorArgs(url);
+    const potPluginArgs = await resolvePotPluginArgs();
     const { args } = buildArgs({
       url,
       mode,
@@ -128,7 +128,7 @@ app.post('/api/download', async (req, res) => {
       jsRuntimeArgs,
       ffmpegLocationArgs,
       cookiesArgs,
-      youtubeExtractorArgs,
+      potPluginArgs,
     });
 
     let stderrOutput = '';
