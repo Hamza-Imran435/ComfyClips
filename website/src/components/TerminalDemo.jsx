@@ -7,7 +7,20 @@ const HEADER_ASCII = `  _____           ___     ________
 \\___/\\___/_/_/_/_/ \\_, /\\___/_/_/ .__/___/
                   /___/        /_/`;
 
-const PLATFORM_ROWS = ['YouTube', 'Instagram', 'TikTok', 'Facebook', 'X / Twitter'];
+const PLATFORM_ROWS = [
+  'YouTube',
+  'Instagram',
+  'TikTok',
+  'Reddit',
+  'Pinterest',
+  'X / Twitter',
+  'Facebook',
+  'Vimeo',
+  'Dailymotion',
+  'Rumble',
+  'LinkedIn',
+  'Snapchat',
+];
 
 // Each step is one beat of the real ComfyClips session. `hold` is how long
 // (ms) this step stays on screen before the next one is appended.

@@ -3,6 +3,14 @@
 All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Website: a "Service Unavailable" notice on the download form for platforms (currently YouTube) that are hitting hosting-provider IP blocks, pointing users to the CLI as a working alternative while the fix is in progress.
+
+### Changed
+- Website: the terminal demo's platform picker now lists all platforms the CLI actually supports (previously stuck at the original five), matching the 1.3.0 platform additions.
+
 ## [1.3.0] - 2026-08-31
 
 ### Added

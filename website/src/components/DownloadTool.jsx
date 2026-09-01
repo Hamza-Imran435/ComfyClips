@@ -41,6 +41,12 @@ const QUALITIES = [
 
 const AUDIO_FORMATS = ['mp3', 'm4a', 'wav', 'opus'];
 
+// Platforms that currently hit hosting-provider IP blocks (e.g. YouTube's
+// "Sign in to confirm you're not a bot" wall on datacenter IPs) often enough
+// that we'd rather warn users up front than let them hit a failed download.
+// The CLI runs from the user's own machine, so it isn't affected.
+const DEGRADED_PLATFORMS = new Set(['YouTube']);
+
 const PLATFORM_INFO = [
   { name: 'YouTube', icon: SiYoutube, pattern: /(^|\.)youtube\.com$|^youtu\.be$/i },
   { name: 'Instagram', icon: SiInstagram, pattern: /(^|\.)instagram\.com$/i },
@@ -134,6 +140,10 @@ export default function DownloadTool() {
     }
   }, [url]);
 
+  const isDegradedPlatform = Boolean(
+    detectedPlatform && DEGRADED_PLATFORMS.has(detectedPlatform.name)
+  );
+
   // Ping the API once on mount so users know if the server is reachable
   // before they try a download.
   useEffect(() => {
@@ -205,7 +215,7 @@ export default function DownloadTool() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (phase === 'downloading' || !url.trim()) return;
+    if (phase === 'downloading' || !url.trim() || isDegradedPlatform) return;
 
     if (mediaBlobUrl) {
       URL.revokeObjectURL(mediaBlobUrl);
@@ -335,10 +345,19 @@ export default function DownloadTool() {
                 <motion.span
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-ink/5 border border-ink/10 px-3 py-1 font-mono text-xs font-medium text-ink"
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-xs font-medium ${
+                    isDegradedPlatform
+                      ? 'border-amber-200 bg-amber-50 text-amber-800'
+                      : 'border-ink/10 bg-ink/5 text-ink'
+                  }`}
                 >
-                  <detectedPlatform.icon className="h-3.5 w-3.5 text-lime-deep" />
-                  <span>{detectedPlatform.name} detected</span>
+                  <detectedPlatform.icon
+                    className={`h-3.5 w-3.5 ${isDegradedPlatform ? 'text-amber-600' : 'text-lime-deep'}`}
+                  />
+                  <span>
+                    {detectedPlatform.name} detected
+                    {isDegradedPlatform ? ' — unavailable' : ''}
+                  </span>
                 </motion.span>
               )}
             </div>
@@ -355,6 +374,38 @@ export default function DownloadTool() {
                 className="w-full rounded-xl border border-ink/15 bg-paper px-4 py-3 font-mono text-sm text-ink outline-none transition-colors placeholder:text-ink/35 focus:border-ink disabled:opacity-50"
               />
             </div>
+
+            <AnimatePresence>
+              {isDegradedPlatform && phase === 'idle' && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="mt-3 overflow-hidden rounded-xl border border-amber-200 bg-amber-50 p-4"
+                >
+                  <div className="flex items-start gap-2.5">
+                    <FaExclamationTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+                    <div>
+                      <p className="font-display text-sm uppercase tracking-wider text-amber-900">
+                        Service Unavailable — {detectedPlatform.name}
+                      </p>
+                      <p className="mt-1 font-body text-sm text-amber-800">
+                        {detectedPlatform.name} downloads through this in-browser tool are
+                        temporarily unreliable —  Our development team is actively
+                        working on this issue.
+                      </p>
+                      <p className="mt-1.5 font-body text-sm text-amber-800">
+                        For a smooth download right now, use our CLI instead —{' '}
+                        <code className="rounded bg-amber-100 px-1.5 py-0.5 font-mono text-xs text-amber-900">
+                          npm i comfyclips
+                        </code>{' '}
+                        runs entirely on your own machine, so it isn't affected.
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Mode & Format Selection */}
@@ -415,10 +466,12 @@ export default function DownloadTool() {
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <button
                 type="submit"
-                disabled={!url.trim()}
+                disabled={!url.trim() || isDegradedPlatform}
                 className="w-full rounded-xl bg-ink px-6 py-3.5 font-mono text-sm font-medium text-paper transition-opacity disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto sm:min-w-[14rem]"
               >
-                Fetch & Preview {mode === 'video' ? 'Video' : 'Audio'} →
+                {isDegradedPlatform
+                  ? 'Unavailable — use the CLI'
+                  : `Fetch & Preview ${mode === 'video' ? 'Video' : 'Audio'} →`}
               </button>
 
               <span
