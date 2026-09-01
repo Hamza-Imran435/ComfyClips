@@ -5,7 +5,13 @@ import { mkdtemp, readdir, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { resolveFfmpeg, resolveJsRuntimeArgs, resolveYtDlpBinaryPath } from './lib/binaries.js';
+import {
+  resolveCookiesArgs,
+  resolveFfmpeg,
+  resolveJsRuntimeArgs,
+  resolvePotPluginArgs,
+  resolveYtDlpBinaryPath,
+} from './lib/binaries.js';
 import { buildArgs } from './lib/downloader.js';
 import { PLATFORMS } from './lib/platforms.js';
 import YTDlpWrap from './lib/ytdlp-lib.js';
@@ -110,6 +116,8 @@ app.post('/api/download', async (req, res) => {
     const binaryPath = await resolveYtDlpBinaryPath();
     const { available: ffmpegAvailable, locationArgs: ffmpegLocationArgs } = resolveFfmpeg();
     const jsRuntimeArgs = await resolveJsRuntimeArgs();
+    const cookiesArgs = resolveCookiesArgs();
+    const potPluginArgs = await resolvePotPluginArgs();
     const { args } = buildArgs({
       url,
       mode,
@@ -119,6 +127,8 @@ app.post('/api/download', async (req, res) => {
       ffmpegAvailable,
       jsRuntimeArgs,
       ffmpegLocationArgs,
+      cookiesArgs,
+      potPluginArgs,
     });
 
     let stderrOutput = '';
@@ -160,6 +170,9 @@ app.post('/api/download', async (req, res) => {
     });
   } catch (err) {
     clearTimeout(timeoutId);
+    // The client only ever sees a sanitized message below — log the raw
+    // yt-dlp failure so it's visible in the platform's runtime logs.
+    console.error('[download] yt-dlp failed:', err.message);
     const msg = (err.message || '').toLowerCase();
     let userFriendlyError = 'Download failed. Check the link and try again.';
 
@@ -183,7 +196,13 @@ app.post('/api/download', async (req, res) => {
     }
 
     if (!res.headersSent) {
-      res.status(500).json({ error: userFriendlyError });
+      // Diagnostics: the sanitized message above hides which failure actually
+      // occurred, which makes remote debugging guesswork. When DEBUG_TOKEN is
+      // set and the caller presents it, pass the raw yt-dlp error through too.
+      const debugToken = process.env.DEBUG_TOKEN;
+      const rawError =
+        debugToken && req.get('x-debug-token') === debugToken ? { rawError: err.message } : {};
+      res.status(500).json({ error: userFriendlyError, ...rawError });
     }
     await rm(tempDir, { recursive: true, force: true }).catch(() => {});
   } finally {

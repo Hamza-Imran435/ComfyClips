@@ -1,7 +1,7 @@
 import AdmZip from 'adm-zip';
 import ffmpegStaticPath from 'ffmpeg-static';
 import { spawnSync } from 'node:child_process';
-import { chmodSync, existsSync, mkdirSync, rmSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import chalk from 'chalk';
@@ -19,6 +19,11 @@ const CACHED_YT_DLP_PATH = path.join(CACHE_DIR, YT_DLP_BIN_NAME);
 const DENO_BIN_NAME = os.platform() === 'win32' ? 'deno.exe' : 'deno';
 const CACHED_DENO_PATH = path.join(CACHE_DIR, DENO_BIN_NAME);
 const DENO_LATEST_RELEASE_API = 'https://api.github.com/repos/denoland/deno/releases/latest';
+const CACHED_COOKIES_PATH = path.join(CACHE_DIR, 'youtube-cookies.txt');
+const PLUGINS_DIR = path.join(CACHE_DIR, 'plugins');
+const POT_PLUGIN_ZIP_PATH = path.join(PLUGINS_DIR, 'bgutil-ytdlp-pot-provider.zip');
+const POT_PLUGIN_RELEASE_API =
+  'https://api.github.com/repos/Brainicism/bgutil-ytdlp-pot-provider/releases/latest';
 
 function commandExists(cmd, versionFlag = '--version') {
   const result = spawnSync(cmd, [versionFlag], { stdio: 'ignore' });
@@ -96,6 +101,69 @@ export async function resolveJsRuntimeArgs() {
     rmSync(CACHED_DENO_PATH, { force: true });
     return [];
   }
+}
+
+// Client spoofing alone (see downloader.js) doesn't clear YouTube's bot
+// check from every datacenter IP range. When it isn't enough, a real
+// logged-in session's cookies do — set YT_COOKIES_B64 to the base64 of a
+// Netscape-format cookies.txt exported from a YouTube account (e.g. via the
+// "Get cookies.txt LOCALLY" browser extension, while signed in). Returns
+// `['--cookies', path]` for buildArgs, or [] if the env var isn't set.
+export function resolveCookiesArgs() {
+  const encoded = process.env.YT_COOKIES_B64;
+  if (!encoded) return [];
+
+  if (!existsSync(CACHED_COOKIES_PATH)) {
+    mkdirSync(CACHE_DIR, { recursive: true });
+    writeFileSync(CACHED_COOKIES_PATH, Buffer.from(encoded, 'base64'));
+  }
+  return ['--cookies', CACHED_COOKIES_PATH];
+}
+
+async function downloadPotPlugin() {
+  const release = await fetch(POT_PLUGIN_RELEASE_API).then((res) => {
+    if (!res.ok) throw new Error(`GitHub API responded with ${res.status}`);
+    return res.json();
+  });
+
+  const asset = release.assets?.find((a) => a.name.endsWith('.zip'));
+  if (!asset) throw new Error('No bgutil-ytdlp-pot-provider release asset found');
+
+  const zipBuffer = await fetch(asset.browser_download_url).then((res) => {
+    if (!res.ok) throw new Error(`Download responded with ${res.status}`);
+    return res.arrayBuffer();
+  });
+
+  mkdirSync(PLUGINS_DIR, { recursive: true });
+  writeFileSync(POT_PLUGIN_ZIP_PATH, Buffer.from(zipBuffer));
+}
+
+// YouTube requires a "proof of origin" token from most yt-dlp clients to
+// serve real download URLs; without one it falls back to clients that are
+// more likely to hit the "Sign in to confirm you're not a bot" wall on
+// datacenter IPs, or fails outright. bgutil-ytdlp-pot-provider is yt-dlp's
+// own recommended long-term fix: a self-hosted token-minting service (see
+// server/POT_PROVIDER.md for deploying it) that needs no account or cookies.
+// This auto-provisions the yt-dlp plugin the same way we do yt-dlp/deno;
+// point it at your deployed service via POT_PROVIDER_URL. Loading the plugin
+// with no reachable service is a harmless no-op (yt-dlp logs a warning and
+// falls back), so it's safe to always enable.
+export async function resolvePotPluginArgs() {
+  const args = [];
+  try {
+    if (!existsSync(POT_PLUGIN_ZIP_PATH)) {
+      await downloadPotPlugin();
+    }
+    args.push('--plugin-dirs', PLUGINS_DIR);
+  } catch (err) {
+    console.error('[pot-plugin] failed to provision:', err.message);
+    return [];
+  }
+
+  if (process.env.POT_PROVIDER_URL) {
+    args.push('--extractor-args', `youtubepot-bgutilhttp:base_url=${process.env.POT_PROVIDER_URL}`);
+  }
+  return args;
 }
 
 export async function resolveYtDlpBinaryPath() {
