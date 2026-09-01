@@ -12,7 +12,6 @@ import {
   resolveYtDlpBinaryPath,
 } from './lib/binaries.js';
 import { buildArgs } from './lib/downloader.js';
-import { resolveYoutubeExtractorArgs } from './lib/potoken.js';
 import { PLATFORMS } from './lib/platforms.js';
 import YTDlpWrap from './lib/ytdlp-lib.js';
 
@@ -117,7 +116,18 @@ app.post('/api/download', async (req, res) => {
     const { available: ffmpegAvailable, locationArgs: ffmpegLocationArgs } = resolveFfmpeg();
     const jsRuntimeArgs = await resolveJsRuntimeArgs();
     const cookiesArgs = resolveCookiesArgs();
-    const youtubeExtractorArgs = await resolveYoutubeExtractorArgs(url);
+    // Loaded lazily and defensively: PO token minting pulls in jsdom, whose
+    // dynamic requires don't always survive a serverless bundler. It's an
+    // enhancement (better formats, fewer bot checks), never a hard dependency,
+    // so failing to load it must not take the API down with it.
+    let youtubeExtractorArgs;
+    try {
+      const { resolveYoutubeExtractorArgs } = await import('./lib/potoken.js');
+      youtubeExtractorArgs = await resolveYoutubeExtractorArgs(url);
+    } catch (err) {
+      // Leaving it undefined makes buildArgs use its own default.
+      console.error('[potoken] unavailable, using fallback client:', err.message);
+    }
     const { args } = buildArgs({
       url,
       mode,
