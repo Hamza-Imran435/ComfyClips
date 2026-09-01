@@ -30,6 +30,7 @@ import {
   SiX,
   SiYoutube,
 } from 'react-icons/si';
+import { API_BASE_URL } from '../lib/api';
 
 const QUALITIES = [
   { key: 'best', label: 'Best Quality' },
@@ -119,6 +120,8 @@ export default function DownloadTool() {
   const [tipIndex, setTipIndex] = useState(0);
   const [error, setError] = useState('');
   const [savedLocally, setSavedLocally] = useState(false);
+  // 'checking' | 'online' | 'offline'
+  const [serverStatus, setServerStatus] = useState('checking');
 
   // Detect platform in real-time
   const detectedPlatform = useMemo(() => {
@@ -130,6 +133,27 @@ export default function DownloadTool() {
       return null;
     }
   }, [url]);
+
+  // Ping the API once on mount so users know if the server is reachable
+  // before they try a download.
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/health`, {
+          signal: AbortSignal.timeout(8000),
+        });
+        if (!cancelled) setServerStatus(res.ok ? 'online' : 'offline');
+      } catch {
+        if (!cancelled) setServerStatus('offline');
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Elapsed timer & tips rotator while downloading
   useEffect(() => {
@@ -201,7 +225,7 @@ export default function DownloadTool() {
     const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
     try {
-      const res = await fetch('/api/download', {
+      const res = await fetch(`${API_BASE_URL}/api/download`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: url.trim(), mode, quality, audioFormat }),
@@ -388,7 +412,7 @@ export default function DownloadTool() {
 
           {/* Submit Action (Only in idle mode) */}
           {phase === 'idle' && (
-            <div className="mt-6">
+            <div className="mt-6 flex flex-wrap items-center gap-3">
               <button
                 type="submit"
                 disabled={!url.trim()}
@@ -396,6 +420,29 @@ export default function DownloadTool() {
               >
                 Fetch & Preview {mode === 'video' ? 'Video' : 'Audio'} →
               </button>
+
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-mono text-xs font-medium ${
+                  serverStatus === 'online'
+                    ? 'border-lime-deep/30 bg-lime/10 text-lime-deep'
+                    : serverStatus === 'offline'
+                    ? 'border-red-200 bg-red-50 text-red-600'
+                    : 'border-ink/10 bg-ink/5 text-ink/50'
+                }`}
+              >
+                {serverStatus === 'checking' && <FaSpinner className="h-3 w-3 animate-spin" />}
+                {serverStatus === 'online' && (
+                  <span className="h-2 w-2 rounded-full bg-lime-deep" />
+                )}
+                {serverStatus === 'offline' && <FaExclamationTriangle className="h-3 w-3" />}
+                <span>
+                  {serverStatus === 'checking'
+                    ? 'Checking server…'
+                    : serverStatus === 'online'
+                    ? 'Server online'
+                    : 'Server offline'}
+                </span>
+              </span>
             </div>
           )}
         </form>
