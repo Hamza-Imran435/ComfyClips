@@ -42,6 +42,16 @@ export function buildArgs({
     // title, which can blow past the filesystem's filename length limit.
     '--trim-filenames',
     '150',
+    // YouTube's default 'web' client increasingly triggers a "Sign in to
+    // confirm you're not a bot" challenge on datacenter IPs (e.g. Vercel).
+    // The 'android' client sidesteps that check (mobile app traffic isn't
+    // challenged the same way); 'web' stays as a fallback for formats
+    // android doesn't expose. Verified locally against a real video —
+    // 'tv'/'web_safari'/'ios' all failed with PO-token or format errors,
+    // this combo produced a working file. Harmless no-op for every other
+    // platform's extractor.
+    '--extractor-args',
+    'youtube:player_client=android,web',
     ...jsRuntimeArgs,
     ...ffmpegLocationArgs,
   ];
