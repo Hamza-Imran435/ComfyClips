@@ -1,16 +1,20 @@
 import cors from 'cors';
 import express from 'express';
-import { createReadStream } from 'node:fs';
+import { createReadStream, existsSync } from 'node:fs';
 import { mkdtemp, readdir, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { resolveFfmpeg, resolveJsRuntimeArgs, resolveYtDlpBinaryPath } from '../src/binaries.js';
-import { buildArgs } from '../src/downloader.js';
-import { PLATFORMS } from '../src/platforms.js';
-import YTDlpWrap from '../src/ytdlp-lib.js';
+import { resolveFfmpeg, resolveJsRuntimeArgs, resolveYtDlpBinaryPath } from './lib/binaries.js';
+import { buildArgs } from './lib/downloader.js';
+import { PLATFORMS } from './lib/platforms.js';
+import YTDlpWrap from './lib/ytdlp-lib.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// Present only in the combined Docker/Render deploy, where the website is
+// built and copied alongside the server in the same image. Absent when this
+// server is deployed standalone (e.g. its own Vercel project) — in that case
+// this is purely an API and skips serving any static site.
 const WEBSITE_DIST = path.join(__dirname, '..', 'website', 'dist');
 
 const PORT = process.env.PORT || 8787;
@@ -187,13 +191,12 @@ app.post('/api/download', async (req, res) => {
   }
 });
 
-// In production this same service also serves the built website, so one
-// deploy + one domain covers both. In local dev the website runs separately
-// through Vite (`npm run dev` in website/), which proxies /api here instead.
-app.use(express.static(WEBSITE_DIST));
-app.get(/^\/(?!api\/).*/, (_req, res) => {
-  res.sendFile(path.join(WEBSITE_DIST, 'index.html'));
-});
+if (existsSync(WEBSITE_DIST)) {
+  app.use(express.static(WEBSITE_DIST));
+  app.get(/^\/(?!api\/).*/, (_req, res) => {
+    res.sendFile(path.join(WEBSITE_DIST, 'index.html'));
+  });
+}
 
 // On Vercel, the function is invoked directly per-request — app.listen()
 // never runs there. Locally (and in the Docker/Render deploy) it's a normal
