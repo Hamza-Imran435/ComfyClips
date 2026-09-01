@@ -31,7 +31,7 @@ export function buildArgs({
   jsRuntimeArgs = [],
   ffmpegLocationArgs = [],
   cookiesArgs = [],
-  potPluginArgs = [],
+  youtubeExtractorArgs = 'player_client=android,web',
 }) {
   const outputTemplate = path.join(outputDir, '%(title)s.%(ext)s');
   const args = [
@@ -44,21 +44,16 @@ export function buildArgs({
     // title, which can blow past the filesystem's filename length limit.
     '--trim-filenames',
     '150',
-    // YouTube's default 'web' client increasingly triggers a "Sign in to
-    // confirm you're not a bot" challenge on datacenter IPs (e.g. Vercel).
-    // The 'android' client sidesteps that check (mobile app traffic isn't
-    // challenged the same way); 'web' stays as a fallback for formats
-    // android doesn't expose. Verified locally against a real video —
-    // 'tv'/'web_safari'/'ios' all failed with PO-token or format errors,
-    // this combo produced a working file. Harmless no-op for every other
+    // Carries the PO token minted in potoken.js when available (YouTube
+    // otherwise answers datacenter IPs with a bot check, or serves a single
+    // low-quality stream), else plain client spoofing. No-op for every other
     // platform's extractor.
     '--extractor-args',
-    'youtube:player_client=android,web',
+    `youtube:${youtubeExtractorArgs}`,
     // Only present when YT_COOKIES_B64 is set (see binaries.js) — a real
-    // logged-in session clears the bot check when client spoofing alone
-    // doesn't, since the datacenter IP itself is what's flagged.
+    // logged-in session clears the bot check when a token alone doesn't,
+    // since the datacenter IP itself is what's flagged.
     ...cookiesArgs,
-    ...potPluginArgs,
     ...jsRuntimeArgs,
     ...ffmpegLocationArgs,
   ];
