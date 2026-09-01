@@ -9,6 +9,7 @@ import {
   resolveCookiesArgs,
   resolveFfmpeg,
   resolveJsRuntimeArgs,
+  resolvePotPluginArgs,
   resolveYtDlpBinaryPath,
 } from './lib/binaries.js';
 import { buildArgs } from './lib/downloader.js';
@@ -138,7 +139,7 @@ app.post('/api/download', async (req, res) => {
       jsRuntimeArgs,
       ffmpegLocationArgs,
       cookiesArgs,
-      youtubeExtractorArgs,
+      potPluginArgs,
     });
 
     let stderrOutput = '';
