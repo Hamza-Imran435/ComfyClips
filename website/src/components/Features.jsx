@@ -8,8 +8,8 @@ const FEATURES = [
   },
   {
     tag: 'QUALITY',
-    title: 'Pick your resolution',
-    body: 'Best available, or cap it at 1080p, 720p, 480p. No hunting through a dozen ad-wrapped quality buttons.',
+    title: 'No watermark, full HD',
+    body: 'Pulled straight from the source on every supported platform, so clips come out watermark-free — best available quality, or cap it at 1080p, 720p, 480p.',
   },
   {
     tag: 'SETUP',

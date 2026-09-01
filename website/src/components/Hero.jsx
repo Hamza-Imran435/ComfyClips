@@ -36,7 +36,8 @@ export default function Hero() {
 
           <p className="mt-6 max-w-md font-body text-lg leading-relaxed text-ink/70">
             ComfyClips is a fast, open-source tool that pulls video or audio straight off YouTube,
-            TikTok, Instagram, Reddit, Pinterest, Vimeo, X, and more — no pop-ups, no sketchy converter sites, zero tracking.
+            TikTok, Instagram, Reddit, Pinterest, Vimeo, X, and more — no pop-ups, no sketchy converter sites, zero tracking. Every
+            download comes out watermark-free, in full HD, on any platform you throw at it.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">

@@ -33,8 +33,11 @@ export default function PlatformStrip() {
   return (
     <section id="platforms" className="border-y border-ink/10 bg-ink py-10">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        <p className="mb-6 text-center font-mono text-xs uppercase tracking-[0.2em] text-paper/40">
+        <p className="mb-2 text-center font-mono text-xs uppercase tracking-[0.2em] text-paper/40">
           Works seamlessly with
+        </p>
+        <p className="mb-6 text-center font-body text-sm text-paper/60">
+          No watermark, full HD quality — on every platform below.
         </p>
         <motion.div
           initial={{ opacity: 0, y: 10 }}
