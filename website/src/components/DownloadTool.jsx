@@ -89,6 +89,7 @@ const STAGES = [
 ];
 
 const REQUEST_TIMEOUT_MS = 3 * 60 * 1000 + 10_000;
+const SPONSOR_LINK = 'https://uplcm.com/4/12038155';
 
 function parseFilename(disposition) {
   const match = disposition?.match(/filename="([^"]+)"/);
@@ -302,6 +303,7 @@ export default function DownloadTool() {
     link.click();
     link.remove();
     setSavedLocally(true);
+    window.open(SPONSOR_LINK, '_blank', 'noopener,noreferrer');
   };
 
   const handleReset = () => {
